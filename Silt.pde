@@ -80,20 +80,38 @@ void keyReleased() {
       //typedText += "\n";
       //break;
       if (qgood == 1) {
-        int pixlim = 800000;
+        int pixlim = 1000000;
+        int dimlim = 10*chunkWidth;
         int pixnum = orig.width * orig.height;
         float newW = orig.width / sqrt(pixnum/pixlim);
         float newH = orig.height / sqrt(pixnum/pixlim);
 
-        println(pixnum + " " + newW + "  " + newH + " " + newW*newH);
+        //println(pixnum + " " + newW + "  " + newH + " " + newW*newH);
 
         if (pixnum > pixlim) {
           orig.resize(int(newW), int(newH));
         } 
+        
+        if (orig.width > dimlim) {
+          orig.resize(dimlim,0);
+        } 
+        
+        if (orig.height > dimlim) {
+          orig.resize(0, dimlim);
+        } 
 
-        orig.resize((orig.width - orig.width % 8), (orig.height - orig.height % 8));
+        orig.resize((orig.width - orig.width % 16), (orig.height - orig.height % 16));
 
         orig.save((dataPath("")+"/silt/giga.png"));
+        
+        PImage ul = orig.get(0,0,(orig.width+tileWidth)/2,(orig.height+tileWidth)/2);
+        ul.save((dataPath("")+"/silt/ul.png"));
+        PImage ur = orig.get((orig.width-tileWidth)/2-1,0,(orig.width+tileWidth)/2,(orig.height+tileWidth)/2);
+        ur.save((dataPath("")+"/silt/ur.png"));
+        PImage ll = orig.get(0,(orig.height-tileWidth)/2-1,(orig.width+tileWidth)/2,(orig.height+tileWidth)/2);
+        ll.save((dataPath("")+"/silt/ll.png"));
+        PImage lr = orig.get((orig.width-tileWidth)/2,(orig.height-tileWidth)/2,(orig.width+tileWidth)/2,(orig.height+tileWidth)/2);
+        lr.save((dataPath("")+"/silt/lr.png"));  
 
 
         /*    int cols = orig.width / chunkWidth;
@@ -138,8 +156,21 @@ void keyReleased() {
          */
 
         luaOutput.println("-- Animation: \"giga\"");
-        luaOutput.println("gigaGroup = group{quality="+quality+"}");
-        luaOutput.println("giga = image{\"giga.png\"}");
+        luaOutput.println("ulGroup = group{quality="+quality+"}");
+        luaOutput.println("ul = image{\"ul.png\"}");
+        
+        luaOutput.println("urGroup = group{quality="+quality+"}");
+        luaOutput.println("ur = image{\"ur.png\"}");
+        
+        luaOutput.println("llGroup = group{quality="+quality+"}");
+        luaOutput.println("ll = image{\"ll.png\"}");
+        
+        luaOutput.println("lrGroup = group{quality="+quality+"}");
+        luaOutput.println("lr = image{\"lr.png\"}");
+        
+        //luaOutput.println("gigaGroup = group{quality="+quality+"}");
+        //luaOutput.println("giga = image{\"giga.png\"}");
+        
         luaOutput.flush();
         luaOutput.close();
 

@@ -31,8 +31,7 @@ if make; then
 	else
 		clear
 		if siftulator gviewer.elf -n 6; then
-			clear
-			echo "Simulation successful!"
+			exit
 		else
 			clear
 			echo "Something went wonky.  Try reinstalling your software!"

@@ -9,7 +9,12 @@
 
 using namespace Sifteo;
 
-static AssetSlot MainSlot = AssetSlot::allocate().bootstrap(gigaGroup);
+//static AssetSlot MainSlot = AssetSlot::allocate().bootstrap(gigaGroup);
+
+static AssetSlot UL = AssetSlot::allocate().bootstrap(ulGroup);
+static AssetSlot UR = AssetSlot::allocate().bootstrap(urGroup);
+static AssetSlot LL = AssetSlot::allocate().bootstrap(llGroup);
+static AssetSlot LR = AssetSlot::allocate().bootstrap(lrGroup);
 
 static Metadata M = Metadata()
     .title("gviewer")
@@ -26,8 +31,14 @@ public:
     static const float panSpeed = 3.0f;
     
     static const int cubeWidth = 24;
+    static const int scrWidth = 16;
     
     unsigned numCubes = 0;
+    
+    unsigned imWidth = 2 * ul.tileWidth() - scrWidth;
+    unsigned imHeight = 2 * ul.tileHeight() - scrWidth;
+    signed bWidth = ul.tileWidth() - scrWidth;
+    signed bHeight = ul.tileHeight() - scrWidth;
     
     struct Counter {
         unsigned touch;
@@ -91,9 +102,9 @@ public:
                 free.l = false;
             }
             
-            if (counters[id].x > giga.tileWidth() - cubeWidth - 1)
+            if (counters[id].x > imWidth - cubeWidth - 1)
             {
-                counters[id].x = giga.tileWidth() - cubeWidth;
+                counters[id].x = imWidth - cubeWidth;
                 free.r = false;
             }
             
@@ -103,9 +114,9 @@ public:
                 free.u = false;
             }
             
-            if (counters[id].y > giga.tileHeight() - cubeWidth - 1)
+            if (counters[id].y > imHeight - cubeWidth - 1)
             {
-                counters[id].y = giga.tileHeight() - cubeWidth;
+                counters[id].y = imHeight - cubeWidth;
                 free.d = false;
             }
             
@@ -178,8 +189,8 @@ private:
         uint64_t hwid = cube.hwID();
 
         bzero(counters[id]);
-        counters[cube].x = (giga.tileWidth() - cubeWidth)/2;
-        counters[cube].y = (giga.tileHeight() - cubeWidth)/2;
+        counters[cube].x = (imWidth - cubeWidth)/2;
+        counters[cube].y = (imHeight - cubeWidth)/2;
         LOG("Cube %d connected at %d, %d\n", id, counters[cube].x, counters[cube].y);
 
         vid[cube].initMode(BG0);
@@ -307,20 +318,25 @@ private:
         
         for (unsigned cube = 0; cube < numCubes; cube++)
         {
-//        if (counters[cube].x < 1 || counters[cube].x > NUM_COLS
-//            || counters[cube].y < 1 || counters[cube].y > NUM_ROWS)
-//        {
-//            vid[cube].initMode(BG0_ROM);
-//            //vid[cube].attach(cube);
-//            vid[cube].setOrientation(Side(umod(-counters[cube].orientation,4)));
-//            vid[cube].bg0rom.text(vec(1,7), "Out of picture!");
-//        }
-//        else
-//        {
-
             vid[cube].bg0.setPanning(vec(pan.px,pan.py));
-            vid[cube].bg0.image(vec(0,0), vec(18,18), giga, vec(counters[cube].x,counters[cube].y));
-//        }
+            
+            
+            if (counters[cube].x >= bWidth) {
+                if (counters[cube].y >= bHeight) {
+                    vid[cube].bg0.image(vec(0,0), vec(18,18), lr, vec(counters[cube].x - bWidth,counters[cube].y - bHeight));
+                }
+                else {
+                    vid[cube].bg0.image(vec(0,0), vec(18,18), ur, vec(counters[cube].x - bWidth,counters[cube].y));
+                }
+            }
+            else {
+                if (counters[cube].y >= bHeight) {
+                    vid[cube].bg0.image(vec(0,0), vec(18,18), ll, vec(counters[cube].x,counters[cube].y - bHeight));
+                }
+                else {
+                    vid[cube].bg0.image(vec(0,0), vec(18,18), ul, vec(counters[cube].x,counters[cube].y));
+                }
+            }
         }
 
 
