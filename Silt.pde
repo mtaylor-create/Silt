@@ -80,7 +80,7 @@ void keyReleased() {
       //typedText += "\n";
       //break;
       if (qgood == 1) {
-        int pixlim = 500000;
+        int pixlim = 800000;
         int pixnum = orig.width * orig.height;
         float newW = orig.width / sqrt(pixnum/pixlim);
         float newH = orig.height / sqrt(pixnum/pixlim);

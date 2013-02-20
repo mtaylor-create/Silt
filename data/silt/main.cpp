@@ -89,28 +89,24 @@ public:
             {
                 counters[id].x = 0;
                 free.l = false;
-                //LOG("MARF L \n");
             }
             
             if (counters[id].x > giga.tileWidth() - cubeWidth - 1)
             {
                 counters[id].x = giga.tileWidth() - cubeWidth;
                 free.r = false;
-                //LOG("MARF R \n");
             }
             
             if (counters[id].y < 1)
             {
                 counters[id].y = 0;
                 free.u = false;
-                //LOG("MARF U \n");
             }
             
             if (counters[id].y > giga.tileHeight() - cubeWidth - 1)
             {
                 counters[id].y = giga.tileHeight() - cubeWidth;
                 free.d = false;
-                //LOG("MARF D \n");
             }
             
             accel = vid[id].virtualAccel().xy();
@@ -122,9 +118,7 @@ public:
             }
             
         }
-        
-        //LOG("%b %b %b %b \n", free.l, free.r, free.u, free.d);
-        
+                
         accel = vid[idx].virtualAccel().xy();
         
         float tiltx = accel.x * panSpeed * ts;
@@ -188,19 +182,13 @@ private:
         counters[cube].y = (giga.tileHeight() - cubeWidth)/2;
         LOG("Cube %d connected at %d, %d\n", id, counters[cube].x, counters[cube].y);
 
-//        vid[id].initMode(BG0_ROM);
-//        vid[id].attach(id);
-//        motion[id].attach(id);
-
         vid[cube].initMode(BG0);
         vid[cube].attach(cube);
-        //drawNeighbors(cube);
         
         // Draw initial state for all sensors
         onAccelChange(cube);
         onBatteryChange(cube);
         onTouch(cube);
-        //drawNeighbors(cube);
       
     }
 
@@ -211,7 +199,6 @@ private:
     void onTouch(unsigned id)
     {
         newest=id;
-        
     }
 
 
@@ -239,10 +226,6 @@ private:
         LOG("Neighbor Add: %02x:%d:%d - %02x:%d:%d\n",
             firstID, firstSide, counters[firstID].orientation,
             secondID, secondSide, counters[secondID].orientation);
-        
-        
-        
-        
         
         
         if(newest==firstID) {
@@ -309,13 +292,11 @@ private:
             counters[firstID].neighborAdd++;
             vid[firstID].initMode(BG0);
             vid[firstID].setOrientation(Side(umod(-counters[firstID].orientation,4)));
-            //drawNeighbors(firstID);
         }
         if (secondID < arraysize(counters)) {
             counters[secondID].neighborAdd++;
             vid[secondID].initMode(BG0);
             vid[secondID].setOrientation(Side(umod(-counters[secondID].orientation,4)));
-            //drawNeighbors(secondID);
         }
     }
         
@@ -336,17 +317,8 @@ private:
 //        }
 //        else
 //        {
-            //vid[cube].initMode(BG0);
-            //vid[cube].attach(cube);
-            //vid[cube].setOrientation(Side(umod(-counters[cube].orientation,4)));
+
             vid[cube].bg0.setPanning(vec(pan.px,pan.py));
-            //index = (counters[cube].x-1)+(NUM_COLS*(counters[cube].y-1));
-            //vid[cube].bg0.image(vec(0,0), giga, index);
-            
-            //pan.x = clamp(pan.x, (1-counters[cube].x)*24, giga.tileWidth()-(counters[cube].x*24));
-            //pan.y = clamp(pan.y, (1-counters[cube].y)*24, giga.tileHeight()-(counters[cube].y*24));
-            //xloc = (counters[cube].x)+pan.x;
-            //yloc = (counters[cube].y)+pan.y;
             vid[cube].bg0.image(vec(0,0), vec(18,18), giga, vec(counters[cube].x,counters[cube].y));
 //        }
         }

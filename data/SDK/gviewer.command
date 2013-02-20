@@ -30,7 +30,7 @@ if make; then
 		echo "Successfully installed to cubes!"
 	else
 		clear
-		if siftulator gviewer.elf; then
+		if siftulator gviewer.elf -n 6; then
 			clear
 			echo "Simulation successful!"
 		else
@@ -43,6 +43,8 @@ else
 fi
 
 read -p "Press [Enter] key to continue"
+
+exit
 
 exec bash
 
